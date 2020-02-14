@@ -1,0 +1,24 @@
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th scope="col">#</th>
+    <th scope="col" sortable="name" (sort)="onSort($event)">Asistentes</th>
+    <th scope="col" sortable="area" (sort)="onSort($event)">Alias</th>
+    <th scope="col" sortable="population" (sort)="onSort($event)">Control</th>
+    <th scope="col" sortable="population" (sort)="onSort($event)">Llegada</th>
+    <th scope="col" sortable="population" (sort)="onSort($event)">estado</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let asistente of lista_asistentes; index as i">
+    <th scope="row">{{ i+1 }}</th>
+    <td>
+      <img [src]="asistente.user.foto" class="mr-2" style="width: 20px">
+    </td>
+    <td>{{ asistente.apodo }}</td>
+    <td>{{ asistente.check_anfitrion }} {{ asistente.check_invitado }} </td>
+    <td>{{ asistente.hora_check_asist }}</td>
+    <td>{{ asistente.estado }}</td>
+  </tr>
+  </tbody>
+</table>

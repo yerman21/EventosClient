@@ -1,0 +1,30 @@
+<form [formGroup]="formEvento" (submit)="saveFormEvento()">
+    <div class="form-group">
+        <label>Titulo</label>
+        <input type="text" class="form-control" formControlName="titulo" required>
+    </div>
+    <div class="form-group">
+        <label>Sub-titulo</label>
+        <input type="text" class="form-control" formControlName="subtitulo" required>
+    </div>
+    <div class="form-group">
+        <label>Descripcion</label>
+        <textarea class="form-control" rows="3" formControlName="descripcion" required></textarea>
+    </div>
+    <div class="form-group">
+        <label>Imagen</label>
+        <input type="file" class="form-control form-control-file"
+        (change)="handleFileInput($event.target.files)" formControlName="foto" required>
+    </div>
+    <div class="form-group">
+        <label>Desde</label>
+        <input type="datetime-local" class="form-control" formControlName="fecha_de_asistencia" required>
+    </div>
+    <div class="form-group">
+        <label>Hasta</label>
+        <input type="datetime-local" class="form-control" formControlName="fecha_de_termino" required>
+    </div>
+    <div class="form-group">
+      <button type="submit" class="btn btn-success" [disabled]="formEvento.invalid">Save</button>
+    </div>
+</form>

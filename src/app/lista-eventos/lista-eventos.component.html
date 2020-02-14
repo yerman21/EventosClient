@@ -1,0 +1,37 @@
+<div class="row mb-3">
+  <ng-content class="col col-2 mr-2 mr-lg-2" select="[btnFormEvento]"></ng-content>
+  <div class="col col-10">
+    <input type="search" placeholder="buscar.." class="form-control mr-sm-2">
+  </div>  
+</div>
+
+<div class="card mb-3" style="max-width: 30em;" *ngFor="let evento of listaEventos">
+    <div class="row no-gutters">
+      <div class="col-md-4">
+        <img [src]="evento.foto" class="img-fluid" alt="...">
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+            <h5 class="card-title">{{evento.titulo}}</h5>
+            <h6 class="card-subtitle text-muted mb-2">{{evento.subtitulo}}</h6>
+            <p class="card-text">
+              {{evento.descripcion}} <br><br>
+              <small class="font-weight-bold">
+                Asistencia: {{ evento.fecha_de_asistencia+' UTC' | date:'MMM d, y - h:mm a' }}<br>
+                Fecha Termino: {{ evento.fecha_de_termino+' UTC' | date:'MMM d, y - h:mm a' }}
+              </small>
+            </p>
+            <div *ngIf="!bandEdit">
+              <a class="card-link btn btn-success text-white" (click)="onApuntarse.emit(evento.id)" *ngIf="!evento.bandApuntado">Me apunto</a>
+              <a class="card-link btn btn-danger text-white" (click)="onDesapuntarse.emit(evento.id)" *ngIf="evento.bandApuntado">Desapuntarse</a>
+            </div>
+            <a class="card-link btn btn-primary text-white" (click)="onVer.emit(evento.id)">Ver</a>
+            <p class="card-text">
+                <small class="text-muted">
+                    Ultima modificacion: {{ (evento.updated_at || evento.created_at)+' UTC' | date:'MMM d, y - h:mm a' }}
+                </small>
+            </p>
+        </div>
+      </div>
+    </div>
+  </div>
