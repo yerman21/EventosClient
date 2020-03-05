@@ -10,7 +10,7 @@ export class InterceptorPersonal implements HttpInterceptor {
     // modificamos los headers
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         //interceptando solicitud
-        let modificarRequest;        
+        let modificarRequest;
         if(this.tokenStore.hasToken()){
             modificarRequest = req.clone({
                 headers: req.headers.set("Authorization", this.tokenStore.getObjectToken().token_full)

@@ -1,6 +1,15 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { FormGroup, FormControl, Validators, FormBuilder, ValidatorFn } from '@angular/forms';
 import { EventoService } from '../_services/evento.service';
+import { UtilitarioService } from '../_services/utilitario.service';
+
+// const MyAwesomeRangeValidator: ValidatorFn = (fg: FormGroup) => {
+//   const start = fg.get('fecha_de_asistencia').value;
+//   const end = fg.get('fecha_de_termino').value;
+//  return start !== null && end !== null && start < end
+//    ? null 
+//    : { range: true };
+// };
 
 @Component({
   selector: 'app-form-evento',
@@ -8,9 +17,10 @@ import { EventoService } from '../_services/evento.service';
   styleUrls: ['./form-evento.component.css']
 })
 export class FormEventoComponent implements OnInit {
-  @Input() iddEvento:number = null;
+  // @Input()
+  iddEvento:number = null;
+  @Output() onSave = new EventEmitter<Boolean>();
   fileToUpload: File = null;
-  
   formEvento = this.fb.group({
     titulo: new FormControl("", Validators.maxLength(100)),
     subtitulo: new FormControl("", Validators.maxLength(50)),
@@ -19,26 +29,38 @@ export class FormEventoComponent implements OnInit {
     fecha_de_asistencia: new FormControl(null),
     fecha_de_termino: new FormControl(null),
   });
-  
-  // formEvento = new FormGroup({
-  //   titulo: new FormControl("", Validators.maxLength(100)),
-  //   subtitulo: new FormControl("", Validators.maxLength(50)),
-  //   descripcion: new FormControl("", Validators.maxLength(200)),
-  //   foto: new FormData(),
-  //   fecha_de_asistencia: new FormControl(null),
-  //   fecha_de_termino: new FormControl(null),
-  // });
 
   constructor(
     private eventoService:EventoService,
     private fb:FormBuilder,
-    private cd: ChangeDetectorRef
+    private utilitario:UtilitarioService
     ) { }
 
   ngOnInit() {
+    this.iddEvento = this.eventoService.iddEvento;
+    if(this.iddEvento){
+      this.formEvento.controls.foto.setValidators([]);
+    }else{
+      this.formEvento.controls.foto.setValidators([Validators.required]);
+    }
+    this.formEvento.controls.foto.updateValueAndValidity();
+    this.fillFormEvento();
   }
 
-  saveFormEvento(){
+  fillFormEvento(){
+    if(!this.iddEvento) return;
+    this.eventoService.getOneEvento(this.iddEvento).subscribe(
+      response => {
+        response["data"].evento.foto = null;
+        this.changeFormatDateISO(response["data"].evento, ["fecha_de_asistencia", "fecha_de_termino"]);
+        this.formEvento.patchValue(response["data"].evento);
+       },
+      error => { console.log(error); }
+    );
+  }
+
+  actionFormEvento(){
+    if(this.formEvento.invalid) return;
     console.log(this.iddEvento);
     console.log(this.formEvento.value);
     if(this.iddEvento){
@@ -50,15 +72,15 @@ export class FormEventoComponent implements OnInit {
 
   nuevoEvento(){
     this.eventoService.save(this.formEvento.value, this.fileToUpload).subscribe(
-      response => { console.log(response) },
-      error =>  { console.log(error) }
+      response => { console.log(response); this.onSave.emit(true); },
+      error => { console.log(error) }
     );
   }
 
   editEvento(){
     if(!this.iddEvento) return;
-    this.eventoService.updated(this.formEvento.value, this.iddEvento).subscribe(
-      response => { console.log(response) },
+    this.eventoService.updated(this.formEvento.value, this.iddEvento, this.fileToUpload).subscribe(
+      response => { console.log(response); this.onSave.emit(true); },
       error =>  { console.log(error) }
     );
   }
@@ -67,21 +89,9 @@ export class FormEventoComponent implements OnInit {
     this.fileToUpload = files.item(0);    
   }
 
-  onFileChange(event) {
-    const reader = new FileReader();
- 
-    if(event.target.files && event.target.files.length) {
-      const [file] = event.target.files;      
-      reader.readAsDataURL(file);
-  
-      reader.onload = () => {
-        this.formEvento.patchValue({
-          foto: reader.result
-       });
-
-        // need to run CD since file load runs outside of zone
-        this.cd.markForCheck();
-      };
+  changeFormatDateISO(data, fields:Array<string>){
+    for(let field of fields){
+       data[field] = this.utilitario.dateToFormatISO(data[field]);
     }
   }
 

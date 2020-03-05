@@ -18,6 +18,7 @@ export class TokenStoreService {
   getObjectToken():TokenInterface{
     return JSON.parse(localStorage.getItem("token"));
   }
+  
   storeTokens(object_token:TokenInterface){
     object_token.token_full = object_token.token_type+" "+object_token.access_token;
     localStorage.setItem("token", JSON.stringify(object_token));

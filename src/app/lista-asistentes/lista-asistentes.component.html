@@ -2,11 +2,11 @@
   <thead>
   <tr>
     <th scope="col">#</th>
-    <th scope="col" sortable="name" (sort)="onSort($event)">Asistentes</th>
+    <th scope="col" sortable="name" (sort)="onSort($event)">Asistente</th>
     <th scope="col" sortable="area" (sort)="onSort($event)">Alias</th>
     <th scope="col" sortable="population" (sort)="onSort($event)">Control</th>
     <th scope="col" sortable="population" (sort)="onSort($event)">Llegada</th>
-    <th scope="col" sortable="population" (sort)="onSort($event)">estado</th>
+    <th scope="col" sortable="population" (sort)="onSort($event)">Estado</th>
   </tr>
   </thead>
   <tbody>
@@ -15,10 +15,17 @@
     <td>
       <img [src]="asistente.user.foto" class="mr-2" style="width: 20px">
     </td>
-    <td>{{ asistente.apodo }}</td>
-    <td>{{ asistente.check_anfitrion }} {{ asistente.check_invitado }} </td>
-    <td>{{ asistente.hora_check_asist }}</td>
-    <td>{{ asistente.estado }}</td>
+    <td>{{ asistente.user.apodo || asistente.user.nombres+asistente.user.apellidos }}</td>
+    <td>
+      <div class="custom-control custom-checkbox checkbox-xl">
+        <input type="checkbox" class="custom-control-input" [disabled]="!isEventOfUser()"
+          [checked]="asistente.check_anfitrion" [id]="'ch'+i"
+          (change)="checkControlAnfitrion($event.target.checked, asistente)">
+        <label class="custom-control-label" [for]="'ch'+i"></label>
+      </div>
+    </td>
+    <td>{{ (asistente.hora_check_asis) ? (asistente.hora_check_asist+' UTC' | date:'dd-MM hh:mm:ss') : ''}}</td>
+    <td>{{ estadoAsistente(asistente.estado) }}</td>
   </tr>
   </tbody>
 </table>

@@ -1,3 +1,25 @@
 .active{
     font-weight: bold;
 }
+
+.checkbox-lg .custom-control-label::before, 
+.checkbox-lg .custom-control-label::after {
+  width: 2.55em;
+  height: 2.55em;
+}
+
+.checkbox-lg .custom-control-label {
+  padding-top: 1.5em;
+  padding-left: 1.5em;
+}
+
+.checkbox-xl .custom-control-label::before, 
+.checkbox-xl .custom-control-label::after {
+  width: 2.85em;
+  height: 2.85em;
+}
+
+.checkbox-xl .custom-control-label {
+  padding-top: 1.5em;
+  padding-left: 1.5em;
+}

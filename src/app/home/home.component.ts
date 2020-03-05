@@ -32,10 +32,9 @@ export class HomeComponent implements OnInit{
   }
 
   ngOnInit() {
-    // let opcion = +this.activeRoute.snapshot.paramMap.get('opcion');
     this.sub = this.activeRoute.data
               .subscribe(
-                v => {this.bandMisEventos = v.bandMisEventos; this.listarEventos(this.bandMisEventos);}
+                v => {this.bandMisEventos = v.bandMisEventos; this.listarEventos();}
               );
   }
 
@@ -43,10 +42,10 @@ export class HomeComponent implements OnInit{
     this.sub.unsubscribe();
   }
 
-  listarEventos(opcion:number=0){
+  listarEventos(){
+    let opcion = this.bandMisEventos || 0;
     let ob_getEventos = this.eventoService.getEventos(opcion).subscribe(
       response => {
-        console.log(response); 
         this.listaEventos = response["data"].eventos;
       },
       error => { console.log(error); }
@@ -55,31 +54,34 @@ export class HomeComponent implements OnInit{
   }
 
   callApuntarse(idd){
-    console.log("callApuntarse : ", idd);
     this.asistenciaEventoService.apuntarse(idd).subscribe(
-      response => { this.lista_eventos.cambiarAsistencia(idd, true); },
+      response => { this.lista_eventos.cambiarEstado("bandApuntado", idd, true); },
       error => { console.log("Error callApuntarse(): ", error); }
     );
   }
 
   callDesapuntarse(idd){
-    console.log("callDesapuntarse : ", idd);
     this.asistenciaEventoService.desapuntarse(idd).subscribe(
-      response => { this.lista_eventos.cambiarAsistencia(idd, false); },
+      response => { this.lista_eventos.cambiarEstado("bandApuntado", idd, false); },
       error => { console.log("Error callDesapuntarse(): ", error); }
     );
   }
 
-  callVer(idd, contentModel){
-    console.log("callVer : ", idd);
-    this.asistenciaEventoService.who_asistent_to_event(idd).subscribe(
+  callVer(_idd, _contentModel){
+    this.asistenciaEventoService.who_asistent_to_event(_idd).subscribe(
       response => { 
-        console.log("Callver()", response);
         this.lista_asistentes = response["data"].asistententes;
-        this.showModalAsistentes(contentModel);
+        this.showModalAsistentes(_contentModel);
       },
       error => console.log("error callVer()", error)
     );    
+  }
+
+  callFormEditar(idd, content){
+    this.bandFormEvento = true;
+    this.eventoService.iddEvento = idd;
+    // this.iddEvento = idd;
+    this.showFormEvento(content)
   }
 
   showModalAsistentes(content) {
@@ -95,9 +97,15 @@ export class HomeComponent implements OnInit{
   showFormEvento(content){
     this.bandFormEvento = true;
     this.modalService.open(content, {size: 'lg'}).result.then(
-      (result) => {},
-      (reason) => {}
+      (result) => { this.eventoService.iddEvento = null; },
+      (reason) => { this.eventoService.iddEvento = null; }
     );
   }
-  
+
+  callConfirmarAsis(_asistente){
+    this.asistenciaEventoService.confirmarAsistencia(_asistente).subscribe(
+      response => this.lista_eventos.cambiarEstado("bandCheckInvitado", _asistente, true),
+      error => console.log(error)
+    );
+  }
 }

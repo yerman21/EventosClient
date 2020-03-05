@@ -25,6 +25,10 @@ export class AsistenciaEventoService {
     return this.httpClient.put(this.API_SERVER+"pasar_asistencia", {evento_id, usuario_id});
   }
 
+  quitarCheckControl(evento_id, usuario_id){
+    return this.httpClient.put(this.API_SERVER+"quitar/check-control", {evento_id, usuario_id});
+  }
+
   confirmarAsistencia(evento_id){
     return this.httpClient.put(this.API_SERVER+`confirmar_asistencia/${evento_id}`, {});
   }

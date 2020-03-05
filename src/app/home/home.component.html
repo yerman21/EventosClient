@@ -1,8 +1,9 @@
 <app-lista-eventos [listaEventos]="listaEventos" (onApuntarse)="callApuntarse($event)" [bandEdit]="bandMisEventos"
-                  (onDesapuntarse)="callDesapuntarse($event)" (onVer)="callVer($event, content)">
+                  (onDesapuntarse)="callDesapuntarse($event)" (onVer)="callVer($event, content)"
+                  (onEditar)="callFormEditar($event, content)" (onConfirmarAsis)="callConfirmarAsis($event)">
 
               <div btnFormEvento *ngIf="bandMisEventos">
-                <button class="btn btn-success" (click)="showFormEvento(content)">Nuevo</button>
+                <button class="btn btn-success" (click)="showFormEvento(content)" >Nuevo</button>
               </div>
 
 </app-lista-eventos>
@@ -16,7 +17,7 @@
     </div>
     <div class="modal-body">
         <app-lista-asistentes *ngIf="!bandFormEvento" [lista_asistentes]="lista_asistentes"></app-lista-asistentes>
-        <app-form-evento *ngIf="bandFormEvento" [iddEvento]="iddEvento"></app-form-evento>
+        <app-form-evento *ngIf="bandFormEvento" (onSave)="[listarEventos(), modal.close('Save click')]"></app-form-evento>
     </div>
     <!-- <div class="modal-footer" *ngIf="bandButonSave">
       <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>

@@ -14,6 +14,7 @@ import { ListaEventosComponent } from './lista-eventos/lista-eventos.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { ListaAsistentesComponent } from './lista-asistentes/lista-asistentes.component';
 import { FormEventoComponent } from './form-evento/form-evento.component';
+import { FiltroEventoPipe } from './_pipes/filtro-evento.pipe';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { FormEventoComponent } from './form-evento/form-evento.component';
     ListaEventosComponent,
     PerfilComponent,
     ListaAsistentesComponent,
-    FormEventoComponent
+    FormEventoComponent,
+    FiltroEventoPipe
   ],
   imports: [
     BrowserModule,
