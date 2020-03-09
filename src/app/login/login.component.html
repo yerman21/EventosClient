@@ -1,20 +1,23 @@
-<div class="card mx-auto" style="width: 18rem;">
-    <div class="card-body">
-        <h5 class="card-title text-center">Iniciar Session</h5>
-        <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
-        <form [formGroup]="formLogin" (ngSubmit)="loguearse()" >
-            <div class="form-group">
-                <label for="username">Correo</label>
-                <input type="email" class="form-control" 
-                formControlName="username" id="username" required>
-                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-            </div>
-            <div class="form-group">
-                <label for="contrasena">Contraseña</label>
-                <input type="password" class="form-control"
-                formControlName="password" id="contrasena" required>
-            </div>
-            <button type="submit" class="btn btn-primary" [disabled]="formLogin.invalid">Login</button>
-        </form>
+<app-loader></app-loader>
+<div style="margin-top: 5em;">
+    <div class="card mx-auto" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title text-center">Iniciar Session</h5>
+            <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
+            <form [formGroup]="formLogin" (ngSubmit)="loguearse()" >
+                <div class="form-group">
+                    <label for="username">Correo</label>
+                    <input type="email" class="form-control" 
+                    formControlName="username" id="username" required>
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                </div>
+                <div class="form-group">
+                    <label for="contrasena">Contraseña</label>
+                    <input type="password" class="form-control"
+                    formControlName="password" id="contrasena" required>
+                </div>
+                <button type="submit" class="btn btn-primary" [disabled]="formLogin.invalid">Login</button>
+            </form>
+        </div>
     </div>
-  </div>
+</div>

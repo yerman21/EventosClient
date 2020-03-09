@@ -9,24 +9,30 @@ import { RegisterComponent } from './register/register.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { InterceptorPersonal } from './_interceptor/InterceptorPersonal';
-import { HomeComponent } from './home/home.component';
 import { ListaEventosComponent } from './lista-eventos/lista-eventos.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { ListaAsistentesComponent } from './lista-asistentes/lista-asistentes.component';
 import { FormEventoComponent } from './form-evento/form-evento.component';
 import { FiltroEventoPipe } from './_pipes/filtro-evento.pipe';
+import { UserNavigationComponent } from './user-navigation/user-navigation.component';
+import { EventoComponent } from './evento/evento.component';
+import { LoaderComponent } from './loader/loader.component';
+import { NotificacionComponent } from './notificacion/notificacion.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    HomeComponent,
+    EventoComponent,
     ListaEventosComponent,
     PerfilComponent,
     ListaAsistentesComponent,
     FormEventoComponent,
-    FiltroEventoPipe
+    FiltroEventoPipe,
+    UserNavigationComponent,
+    LoaderComponent,
+    NotificacionComponent
   ],
   imports: [
     BrowserModule,

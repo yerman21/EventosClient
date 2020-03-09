@@ -1,0 +1,6 @@
+<p *ngFor="let noti of notificaciones">
+    <ngb-alert class="alert-dismissible fade" [ngClass]="{'hide': noti.visible == false, 'show': noti.visible == true}"  [type]="noti.type" (close)="close(noti)" #notiHTML>
+      {{ noti.msg }}
+    </ngb-alert>
+  </p>
+<p>

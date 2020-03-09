@@ -1,6 +1,8 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { UsuarioService } from '../_services/usuario.service';
 import { FormGroup, FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
+import { NotificacionService } from '../_services/notificacion.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +18,11 @@ export class LoginComponent implements OnInit {
 
   @Output() loginExito = new EventEmitter<Boolean>();
 
-  constructor(private userService:UsuarioService) { }
+  constructor(
+    private userService:UsuarioService,
+    private router:Router,
+    private notiService:NotificacionService
+  ) { }
 
   ngOnInit() {
   }
@@ -26,10 +32,12 @@ export class LoginComponent implements OnInit {
     this.userService.loguearse(this.formLogin.value).subscribe(
       response => { 
         console.log("subscribe de loginComponent", response);
-        this.loginExito.emit(true);
+        // this.notiService.addNotifiInfo(response["message"]),
+        // this.loginExito.emit(true);
+        this.router.navigate(["/app", {outlets: {logueado: ""}}]);
       },
       error => {
-        console.log("hubo un error : ", error);
+        // this.notiService.addNotifiDanger(error["message"])
       }
     );
   }

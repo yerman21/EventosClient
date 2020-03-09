@@ -1,16 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpResponse, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { tap, catchError } from "rxjs/operators";
+import { tap, catchError, finalize } from "rxjs/operators";
 import { TokenStoreService } from '../_services/token-store.service';
+import { Router } from '@angular/router';
+import { LoaderService } from '../_services/loader.service';
 
 @Injectable()
 export class InterceptorPersonal implements HttpInterceptor {
-    constructor(private tokenStore: TokenStoreService){}
+    constructor(private tokenStore: TokenStoreService, private router:Router, private loaderService:LoaderService){}
     // modificamos los headers
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        this.loaderService.show();
         //interceptando solicitud
         let modificarRequest;
+        
         if(this.tokenStore.hasToken()){
             modificarRequest = req.clone({
                 headers: req.headers.set("Authorization", this.tokenStore.getObjectToken().token_full)
@@ -28,11 +32,18 @@ export class InterceptorPersonal implements HttpInterceptor {
                     // if(response instanceof HttpResponse)
                     //     console.log("api call success :", response); 
             }),
-            catchError(response => {
-                console.log("ejecutando dentro de catchError");                
-                console.log("api call error :", response);
+            catchError((error:HttpErrorResponse) => {
+                console.log("ejecutando dentro de catchError. ", error);
+                if(error.status == 401){
+                    this.tokenStore.cleanTokens();
+                    this.router.navigateByUrl("login");
+                }
 
-                return throwError(response);
+                return throwError(error);
+            }),
+            finalize( () => {
+                console.log("Finalice");
+                this.loaderService.hide() 
             })
         );
     }

@@ -19,7 +19,4 @@
         <app-lista-asistentes *ngIf="!bandFormEvento" [lista_asistentes]="lista_asistentes"></app-lista-asistentes>
         <app-form-evento *ngIf="bandFormEvento" (onSave)="[listarEventos(), modal.close('Save click')]"></app-form-evento>
     </div>
-    <!-- <div class="modal-footer" *ngIf="bandButonSave">
-      <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
-    </div> -->
   </ng-template>

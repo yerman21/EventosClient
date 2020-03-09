@@ -5,28 +5,30 @@ import { EventoService } from '../_services/evento.service';
 import { Subscription } from 'rxjs';
 import { AsistenciaEventoService } from '../_services/asistencia-evento.service';
 import { ListaEventosComponent } from '../lista-eventos/lista-eventos.component';
-import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AsistenteInterface } from '../_interfaces/asistente-interface';
+import { NotificacionService } from '../_services/notificacion.service';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  selector: 'app-evento',
+  templateUrl: './evento.component.html',
+  styleUrls: ['./evento.component.css']
 })
-export class HomeComponent implements OnInit{
+export class EventoComponent implements OnInit{
   listaEventos = [] as EventoInterface[];
   lista_asistentes = [] as AsistenteInterface[];
-  @ViewChild(ListaEventosComponent, {static:false}) lista_eventos:ListaEventosComponent;
   bandMisEventos:number;
   bandFormEvento:boolean;
   iddEvento:number;
   sub = new Subscription();
+  @ViewChild(ListaEventosComponent, {static:false}) lista_eventos:ListaEventosComponent;
 
   constructor(
     private modalService: NgbModal,
     private activeRoute: ActivatedRoute,
     private eventoService: EventoService,
-    private asistenciaEventoService: AsistenciaEventoService
+    private asistenciaEventoService: AsistenciaEventoService,
+    private notiService: NotificacionService
   ) {
 
   }
@@ -47,8 +49,9 @@ export class HomeComponent implements OnInit{
     let ob_getEventos = this.eventoService.getEventos(opcion).subscribe(
       response => {
         this.listaEventos = response["data"].eventos;
+        this.notiService.addNotifiInfo(response["message"]);
       },
-      error => { console.log(error); }
+      error => { this.notiService.addNotifiDanger(error.error["errorGeneral"]); }
     );
     this.sub.add(ob_getEventos);
   }
@@ -56,14 +59,14 @@ export class HomeComponent implements OnInit{
   callApuntarse(idd){
     this.asistenciaEventoService.apuntarse(idd).subscribe(
       response => { this.lista_eventos.cambiarEstado("bandApuntado", idd, true); },
-      error => { console.log("Error callApuntarse(): ", error); }
+      error => { this.notiService.addNotifiDanger(error.error["errorGeneral"]); }
     );
   }
 
   callDesapuntarse(idd){
     this.asistenciaEventoService.desapuntarse(idd).subscribe(
       response => { this.lista_eventos.cambiarEstado("bandApuntado", idd, false); },
-      error => { console.log("Error callDesapuntarse(): ", error); }
+      error => { this.notiService.addNotifiDanger(error.error["errorGeneral"]); }
     );
   }
 
@@ -73,7 +76,7 @@ export class HomeComponent implements OnInit{
         this.lista_asistentes = response["data"].asistententes;
         this.showModalAsistentes(_contentModel);
       },
-      error => console.log("error callVer()", error)
+      error => this.notiService.addNotifiDanger(error.error["errorGeneral"])
     );    
   }
 
@@ -105,7 +108,7 @@ export class HomeComponent implements OnInit{
   callConfirmarAsis(_asistente){
     this.asistenciaEventoService.confirmarAsistencia(_asistente).subscribe(
       response => this.lista_eventos.cambiarEstado("bandCheckInvitado", _asistente, true),
-      error => console.log(error)
+      error => this.notiService.addNotifiDanger(error.error["errorGeneral"])
     );
   }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder, ValidatorFn } from '@angular/forms';
 import { EventoService } from '../_services/evento.service';
 import { UtilitarioService } from '../_services/utilitario.service';
+import { NotificacionService } from '../_services/notificacion.service';
 
 // const MyAwesomeRangeValidator: ValidatorFn = (fg: FormGroup) => {
 //   const start = fg.get('fecha_de_asistencia').value;
@@ -33,7 +34,8 @@ export class FormEventoComponent implements OnInit {
   constructor(
     private eventoService:EventoService,
     private fb:FormBuilder,
-    private utilitario:UtilitarioService
+    private utilitario:UtilitarioService,
+    private notiService:NotificacionService
     ) { }
 
   ngOnInit() {
@@ -55,7 +57,7 @@ export class FormEventoComponent implements OnInit {
         this.changeFormatDateISO(response["data"].evento, ["fecha_de_asistencia", "fecha_de_termino"]);
         this.formEvento.patchValue(response["data"].evento);
        },
-      error => { console.log(error); }
+      error => { this.notiService.addNotifiDanger(error.error["errorGeneral"]) }
     );
   }
 
@@ -72,16 +74,22 @@ export class FormEventoComponent implements OnInit {
 
   nuevoEvento(){
     this.eventoService.save(this.formEvento.value, this.fileToUpload).subscribe(
-      response => { console.log(response); this.onSave.emit(true); },
-      error => { console.log(error) }
+      response => {
+        this.notiService.addNotifiSuccess(response["message"]);
+        this.onSave.emit(true);
+      },
+      error => this.notiService.addNotifiDanger(error.error["errorGeneral"])
     );
   }
 
   editEvento(){
     if(!this.iddEvento) return;
     this.eventoService.updated(this.formEvento.value, this.iddEvento, this.fileToUpload).subscribe(
-      response => { console.log(response); this.onSave.emit(true); },
-      error =>  { console.log(error) }
+      response => { 
+        this.notiService.addNotifiInfo(response["message"]);
+        this.onSave.emit(true); 
+      },
+      error => this.notiService.addNotifiDanger(error.error["errorGeneral"])
     );
   }
 
