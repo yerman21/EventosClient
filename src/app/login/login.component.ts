@@ -12,7 +12,8 @@ import { NotificacionService } from '../_services/notificacion.service';
 export class LoginComponent implements OnInit {
   // formLogin:FormGroup;
   formLogin = new FormGroup({
-    username: new FormControl(),
+    // username: new FormControl(),
+    email: new FormControl(),
     password: new FormControl(),
   });
 

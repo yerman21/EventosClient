@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from "@angular/common/http";
 import { catchError, tap, map } from 'rxjs/operators';
 import { throwError } from 'rxjs';
@@ -9,7 +9,7 @@ import { UserInterface } from '../_interfaces/user-interface';
 @Injectable({
   providedIn: 'root'
 })
-export class UsuarioService {
+export class UsuarioService implements OnDestroy{
   private API_DOMANIN:string = "http://localhost:8000/";
   private API_SERVER:string = this.API_DOMANIN+"api/";
   private clientID:number = 2;
@@ -17,6 +17,10 @@ export class UsuarioService {
   userSession:UserInterface;
 
   constructor(private httpClient :HttpClient, private tokenService: TokenStoreService) { }
+  
+  ngOnDestroy(){
+    this.tokenService.cleanTokens();
+  }
 
   register(data){
     return this.httpClient.post(this.API_SERVER+"user/register", data);
@@ -27,10 +31,12 @@ export class UsuarioService {
     data.client_id = this.clientID;
     data.client_secret = this.clientSecred;
 
-    return this.httpClient.post(this.API_DOMANIN+"oauth/token", data).pipe(
+    // return this.httpClient.post(this.API_DOMANIN+"oauth/token", data).pipe(
+    return this.httpClient.post(this.API_SERVER+"login", data).pipe(
       tap((rpta:TokenInterface) => {
-         this.tokenService.storeTokens(rpta);
-         this.getUserData();
+         this.tokenService.storeTokens(rpta["data"].token);
+         this.userSession = rpta["data"].userData;
+        //  this.getUserData();
       }),
     //   tap((rpta:TokenInterface) => {
     //     console.log("tap2, ", rpta);
@@ -53,7 +59,7 @@ export class UsuarioService {
     if(this.userSession == null) this.getUserData();
     return this.tokenService.hasToken();
   }
-
+  
   logout(){
     return this.httpClient.get(this.API_SERVER+"user/logout").pipe(
       tap(response => {

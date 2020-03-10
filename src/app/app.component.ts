@@ -25,23 +25,6 @@ export class AppComponent implements OnDestroy{
     this.logout();
   }
 
-  // vistaUsuarioLogueado(){
-  //   this.visibleRouterOutlet = true;
-  //   this.permisos = [
-  //     {link:"eventos/0", label:"Eventos"},
-  //     {link:"eventos/1", label:"Mis Eventos"},
-  //     {link:"perfil", label:"Mi Perfil"}
-  //   ]
-  // }
-
-  // viewBeforeLoggin(){
-  //   this.visibleRouterOutlet = false;
-  //   this.permisos = [
-  //     {link:"", label:"Login"},
-  //     {link:"register", label:"Registrarce"}
-  //   ]
-  // }
-
   logout(){
     this.userService.logout().subscribe(
       response => {

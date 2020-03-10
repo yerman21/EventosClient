@@ -22,10 +22,12 @@ export class ListaAsistentesComponent implements OnInit {
   }
 
   isEventOfUser(){
+    console.log(this.userService.userSession);
     return this.userService.userSession.id == this.lista_asistentes[0]["evento"].users_id;
   }
 
   isUser(_id){
+    console.log(this.userService.userSession);
     return this.userService.userSession.id == _id;
   }
 
