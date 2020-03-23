@@ -15,7 +15,7 @@
     <td>
       <img [src]="asistente.user.foto" class="mr-2" style="width: 20px">
     </td>
-    <td>{{ asistente.user.apodo || asistente.user.nombres+asistente.user.apellidos }}</td>
+    <td><a [routerLink]="['/app', {outlets:{ logueado: 'perfil/'+asistente.user.id }}]">{{ asistente.user.apodo || asistente.user.nombres+asistente.user.apellidos }}</a></td>
     <td>
       <div class="custom-control custom-checkbox checkbox-xl">
         <input type="checkbox" class="custom-control-input" [disabled]="!isEventOfUser()"
@@ -24,7 +24,7 @@
         <label class="custom-control-label" [for]="'ch'+i"></label>
       </div>
     </td>
-    <td>{{ (asistente.hora_check_asis) ? (asistente.hora_check_asist+' UTC' | date:'dd-MM hh:mm:ss') : ''}}</td>
+    <td>{{ (asistente.hora_check_asist) ? (asistente.hora_check_asist+' UTC' | date:'dd-MM hh:mm:ss') : ''}}</td>
     <td>{{ estadoAsistente(asistente.estado) }}</td>
   </tr>
   </tbody>

@@ -3,6 +3,7 @@ import { AsistenteInterface } from '../_interfaces/asistente-interface';
 import { UsuarioService } from '../_services/usuario.service';
 import { AsistenciaEventoService } from '../_services/asistencia-evento.service';
 import { NotificacionService } from '../_services/notificacion.service';
+import { UtilitarioService } from '../_services/utilitario.service';
 
 @Component({
   selector: 'app-lista-asistentes',
@@ -15,7 +16,8 @@ export class ListaAsistentesComponent implements OnInit {
   constructor(
     private userService:UsuarioService,
     private asisEventoService:AsistenciaEventoService,
-    private notiService:NotificacionService
+    private notiService:NotificacionService,
+    private utilitario:UtilitarioService
   ) { }
 
   ngOnInit() {

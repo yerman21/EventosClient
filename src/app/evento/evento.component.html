@@ -1,9 +1,11 @@
 <app-lista-eventos [listaEventos]="listaEventos" (onApuntarse)="callApuntarse($event)" [bandEdit]="bandMisEventos"
-                  (onDesapuntarse)="callDesapuntarse($event)" (onVer)="callVer($event, content)"
+                   [inputBandMisEventos]="inputBandMisEventos" (onDesapuntarse)="callDesapuntarse($event)" (onVer)="callVer($event, content)"
                   (onEditar)="callFormEditar($event, content)" (onConfirmarAsis)="callConfirmarAsis($event)">
-
-              <div btnFormEvento *ngIf="bandMisEventos">
-                <button class="btn btn-success" (click)="showFormEvento(content)" >Nuevo</button>
+              
+              <div *ngIf="!inputBand">
+                <div btnFormEvento *ngIf="bandMisEventos">
+                  <button class="btn btn-success" (click)="showFormEvento(content)" >Nuevo</button>
+                </div>
               </div>
 
 </app-lista-eventos>

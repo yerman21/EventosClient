@@ -1,0 +1,11 @@
+.fondo-perfil{
+    height: 12em;
+    background: url('src/assets/_images/circles.png') no-repeat, linear-gradient(to right, #A74CF2, #617BFB);
+}
+.fondo-perfil-imagen{
+    background: whitesmoke;
+}
+.label-dato-info{
+    display: block;
+    font-size: large;    
+}

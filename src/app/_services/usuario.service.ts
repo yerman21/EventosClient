@@ -5,6 +5,7 @@ import { throwError } from 'rxjs';
 import { TokenStoreService } from './token-store.service';
 import { TokenInterface } from '../_interfaces/token-interface';
 import { UserInterface } from '../_interfaces/user-interface';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,13 @@ export class UsuarioService implements OnDestroy{
   private clientID:number = 2;
   private clientSecred:string = "3lDBPTBhk3XnOtnWCzJKaSprznoQmribb2BqXTql";
   userSession:UserInterface;
+  isSetTimeoutSession:boolean = false;
 
-  constructor(private httpClient :HttpClient, private tokenService: TokenStoreService) { }
+  constructor(
+    private httpClient:HttpClient,
+    private tokenService: TokenStoreService,
+    private router:Router
+  ) { }
   
   ngOnDestroy(){
     this.tokenService.cleanTokens();
@@ -36,11 +42,9 @@ export class UsuarioService implements OnDestroy{
       tap((rpta:TokenInterface) => {
          this.tokenService.storeTokens(rpta["data"].token);
          this.userSession = rpta["data"].userData;
-        //  this.getUserData();
+
+         this.expirateTimeSession();
       }),
-    //   tap((rpta:TokenInterface) => {
-    //     console.log("tap2, ", rpta);
-    //  }),
       catchError(error => {
         console.log("hubo un error : ", error); 
         return throwError(error);
@@ -48,22 +52,65 @@ export class UsuarioService implements OnDestroy{
     );
   }
 
+  refreshToken(){
+    let data = {
+      grant_type: "refresh_token",
+      client_id : this.clientID,
+      client_secret : this.clientSecred,
+      refresh_token : this.tokenService.getObjectToken().refresh_token
+    };
+
+    return this.httpClient.post(this.API_SERVER+"refreshToken", data).pipe(
+      tap((rpta:TokenInterface) => {
+         this.tokenService.storeTokens(rpta["data"].token);
+         this.userSession = rpta["data"].userData;
+         this.expirateTimeSession();
+      }),
+      catchError(error => {
+        console.log("hubo un error : ", error);
+        return throwError(error);
+      })
+    );
+  }
+
   getUserData(){
-    this.httpClient.get(this.API_SERVER+"user/data").subscribe(
+    this.getInformacionOfUser().subscribe(
       response => this.userSession = response["data"].user,
       error => console.log("error", error)
     );
   }
 
+  getInformacionOfUser(idd=""){
+    return this.httpClient.get(this.API_SERVER+"user/data"+(idd == "" ? idd : "/"+idd));
+  }
+
+  expirateTimeSession(timeDefault=null){
+    console.log("tiempo es ", this.tokenService.getObjectToken().expires_in);
+    setTimeout(() => {
+      var r = confirm("Se termino la session, desea continuar???");
+      if(!r){
+        this.refreshToken().subscribe(() => this.logout().subscribe() );
+      }else{
+        this.refreshToken().subscribe();
+      }
+    }, timeDefault || this.tokenService.getObjectToken().expires_in*1000);
+    this.isSetTimeoutSession = true;
+  }
+  
   hasToken(){
     if(this.userSession == null) this.getUserData();
     return this.tokenService.hasToken();
   }
   
+  cleanTokens(){
+    this.tokenService.cleanTokens();
+  }
+
   logout(){
     return this.httpClient.get(this.API_SERVER+"user/logout").pipe(
       tap(response => {
           this.tokenService.cleanTokens();
+          this.router.navigateByUrl("login");
       }),
       catchError(error => {
         console.log("error inesperado", error);
@@ -71,5 +118,4 @@ export class UsuarioService implements OnDestroy{
       })
     );
   }
-
 }

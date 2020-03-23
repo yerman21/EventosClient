@@ -9,6 +9,7 @@ import { EventoInterface } from '../_interfaces/evento-interface';
 export class ListaEventosComponent implements OnInit {
   @Input() listaEventos:EventoInterface[];
   @Input() bandEdit:number;
+  @Input() inputBandMisEventos:boolean;
   @Output() onApuntarse = new EventEmitter<number>();
   @Output() onDesapuntarse = new EventEmitter<number>();
   @Output() onVer = new EventEmitter<number>();
@@ -21,6 +22,7 @@ export class ListaEventosComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(`bandEdit=${this.bandEdit}, inputBandMisEventos=${this.inputBandMisEventos}`);
   }
   
   cambiarEstado(_atributo:string, _idd, _band:boolean){

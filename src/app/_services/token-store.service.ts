@@ -8,7 +8,8 @@ export class TokenStoreService {
   constructor() { }
 
   hasToken(){
-    let object_token:TokenInterface = JSON.parse(localStorage.getItem("token"));
+    sessionStorage.setItem("isConnected", "true");
+    let object_token:TokenInterface = JSON.parse(localStorage.getItem("token"));   
     if(object_token != null){
       return object_token.access_token != "";
     }
@@ -28,4 +29,5 @@ export class TokenStoreService {
     localStorage.removeItem("token");
     localStorage.clear();
   }
+  
 }

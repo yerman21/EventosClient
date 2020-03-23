@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { EventoInterface } from '../_interfaces/evento-interface';
 import { EventoService } from '../_services/evento.service';
@@ -8,6 +8,7 @@ import { ListaEventosComponent } from '../lista-eventos/lista-eventos.component'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AsistenteInterface } from '../_interfaces/asistente-interface';
 import { NotificacionService } from '../_services/notificacion.service';
+import { UsuarioService } from '../_services/usuario.service';
 
 @Component({
   selector: 'app-evento',
@@ -15,7 +16,9 @@ import { NotificacionService } from '../_services/notificacion.service';
   styleUrls: ['./evento.component.css']
 })
 export class EventoComponent implements OnInit{
-  listaEventos = [] as EventoInterface[];
+  @Input() inputBand:boolean = false;
+  @Input() inputBandMisEventos:boolean = false;
+  @Input() listaEventos = [] as EventoInterface[];
   lista_asistentes = [] as AsistenteInterface[];
   bandMisEventos:number;
   bandFormEvento:boolean;
@@ -28,7 +31,8 @@ export class EventoComponent implements OnInit{
     private activeRoute: ActivatedRoute,
     private eventoService: EventoService,
     private asistenciaEventoService: AsistenciaEventoService,
-    private notiService: NotificacionService
+    private notiService: NotificacionService,
+    private usuarioService:UsuarioService
   ) {
 
   }
@@ -36,15 +40,22 @@ export class EventoComponent implements OnInit{
   ngOnInit() {
     this.sub = this.activeRoute.data
               .subscribe(
-                v => {this.bandMisEventos = v.bandMisEventos; this.listarEventos();}
+                v => {
+                  if(!this.inputBand){
+                    this.bandMisEventos = v.bandMisEventos;
+                  }
+                  this.listarEventos();
+                }
               );
+    this.areMyEvents();
   }
 
-   ngOnDestroy() {
+  ngOnDestroy() {
     this.sub.unsubscribe();
   }
 
   listarEventos(){
+    if(this.inputBand) return;
     let opcion = this.bandMisEventos || 0;
     let ob_getEventos = this.eventoService.getEventos(opcion).subscribe(
       response => {
@@ -110,5 +121,9 @@ export class EventoComponent implements OnInit{
       response => this.lista_eventos.cambiarEstado("bandCheckInvitado", _asistente, true),
       error => this.notiService.addNotifiDanger(error.error["errorGeneral"])
     );
+  }
+  areMyEvents(){
+    if(this.inputBand && this.listaEventos.length > 0)
+    this.inputBandMisEventos = this.usuarioService.userSession.id == this.listaEventos[0].users_id;
   }
 }

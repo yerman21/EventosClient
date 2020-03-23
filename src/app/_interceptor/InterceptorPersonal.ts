@@ -3,14 +3,19 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpResponse, Htt
 import { Observable, throwError } from 'rxjs';
 import { tap, catchError, finalize } from "rxjs/operators";
 import { TokenStoreService } from '../_services/token-store.service';
-import { Router } from '@angular/router';
 import { LoaderService } from '../_services/loader.service';
+import { UsuarioService } from '../_services/usuario.service';
 
 @Injectable()
 export class InterceptorPersonal implements HttpInterceptor {
-    constructor(private tokenStore: TokenStoreService, private router:Router, private loaderService:LoaderService){}
+    constructor(
+        private usuarioService:UsuarioService,
+        private tokenStore: TokenStoreService,
+        private loaderService:LoaderService
+    ){}
     // modificamos los headers
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        console.log("show loader");
         this.loaderService.show();
         //interceptando solicitud
         let modificarRequest;
@@ -35,15 +40,15 @@ export class InterceptorPersonal implements HttpInterceptor {
             catchError((error:HttpErrorResponse) => {
                 console.log("ejecutando dentro de catchError. ", error);
                 if(error.status == 401){
-                    this.tokenStore.cleanTokens();
-                    this.router.navigateByUrl("login");
+                    this.usuarioService.expirateTimeSession(1);
+                    // this.tokenStore.cleanTokens();
+                    // this.router.navigateByUrl("login");
                 }
-
                 return throwError(error);
             }),
             finalize( () => {
-                console.log("Finalice");
-                this.loaderService.hide() 
+                console.log("finalize loader");
+                this.loaderService.hide();
             })
         );
     }

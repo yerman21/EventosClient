@@ -1,1 +1,41 @@
-<p>perfil works!</p>
+<div class="col mb-3">
+    <div class="row mb-2 fondo-perfil">
+        <div class="col col-md-3 my-auto">
+            <img [src]="userInfo.foto || 'https://previews.123rf.com/images/yupiramos/yupiramos1609/yupiramos160912832/62358693-avatar-hombre-de-dibujos-animados-usuario-de-persona-masculina-ilustraci%C3%B3n-vectorial.jpg'"
+            class="img-fluid p-2 fondo-perfil-imagen" alt="...">
+        </div>
+        <div class="col col-md-6 d-flex align-content-center flex-wrap">
+            <h1 class="align-middle">{{ (userInfo.apodo || userInfo.nombres+' '+userInfo.apellidos) || '' }}</h1>
+        </div>
+    </div>
+    <div class="col">
+        <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs text-center">
+            <li [ngbNavItem]="1">
+                <a ngbNavLink>Información</a>
+                <ng-template ngbNavContent>
+                <div class="bg-light">
+                    <label class="label-dato-info">Nombre: {{userInfo.nombres || ''}}</label>
+                    <label class="label-dato-info">Apellido: {{userInfo.apellidos || ''}}</label>
+                    <label class="label-dato-info">Email: {{userInfo.email || ''}}</label>
+                    <label class="label-dato-info">Edad: {{userInfo.edad || ''}}</label>
+                    <label class="label-dato-info">Genero: {{ getLabelGenero(userInfo.genero || '') }}</label>
+                </div>
+                </ng-template>
+            </li>
+            <li [ngbNavItem]="2">
+                <a ngbNavLink>Eventos</a>
+                <ng-template ngbNavContent>
+                    <app-evento [inputBand]="true" [inputBandMisEventos]="true" [listaEventos]="listaEventosDUsuario"></app-evento>
+                </ng-template>
+            </li>
+            <li [ngbNavItem]="3">
+                <a ngbNavLink>Asistencia</a>
+                <ng-template ngbNavContent>
+                    <app-evento [inputBand]="true" [inputBandMisEventos]="false" [listaEventos]="listaEventosQAsistio"></app-evento>
+                </ng-template>
+            </li>
+        </ul>
+        
+        <div [ngbNavOutlet]="nav" class="mt-2"></div>
+    </div>
+</div>

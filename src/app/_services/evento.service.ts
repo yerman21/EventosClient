@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { tap, map } from 'rxjs/operators';
+import { tap, map, delay } from 'rxjs/operators';
 import { EventoInterface } from '../_interfaces/evento-interface';
 import { UtilitarioService } from './utilitario.service';
 
@@ -18,6 +18,7 @@ export class EventoService {
 
   getOneEvento(idd){
     return this.httpClient.get(this.API_SERVER+"edit/"+idd).pipe(
+      delay(0),
       tap(r => {
         let evento = r["data"]["evento"];
         evento.fecha_de_asistencia = this.utilitario.conDateUTCtoLocal(evento.fecha_de_asistencia);
@@ -27,8 +28,8 @@ export class EventoService {
     );
   }
 
-  getEventos(bandOtros=0){
-      return this.httpClient.get(this.API_SERVER+bandOtros).pipe(
+  getEventos(bandOpcion=0, idUsuario=0){
+      return this.httpClient.get(this.API_SERVER+bandOpcion+(!idUsuario?"":"/perfil/"+idUsuario)).pipe(
         tap(r => {
           let base = r["data"].basePathImage;
           let eventos = r["data"]["eventos"];

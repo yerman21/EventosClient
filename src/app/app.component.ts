@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, HostListener } from '@angular/core';
 import { UsuarioService } from './_services/usuario.service';
 import { NotificacionService } from './_services/notificacion.service';
 
@@ -10,7 +10,7 @@ import { NotificacionService } from './_services/notificacion.service';
 export class AppComponent implements OnDestroy{  
   title = 'Eventos App';
   permisos = [] as Array<Object>;
-  visibleRouterOutlet:boolean;
+  visibleRouterOutlet:boolean;  
 
   constructor(private userService:UsuarioService, private notiService:NotificacionService){
     // if(!userService.hasToken()){
@@ -18,11 +18,14 @@ export class AppComponent implements OnDestroy{
     // }else{
     //   this.vistaUsuarioLogueado();
     // }
+    // this.automaticCloseSession();
   }
 
   ngOnDestroy(): void {
     console.log("Cerrando session...");
-    this.logout();
+    // alert("juventud");
+    // localStorage.clear();
+    // this.logout();
   }
 
   logout(){
@@ -36,6 +39,41 @@ export class AppComponent implements OnDestroy{
         this.notiService.addNotifiDanger("Error al desloguearse");
       }
     );
+  }
+
+  @HostListener("window:onstorage",["$event"])
+  automaticCloseSession(event){
+    // window.onbeforeunload = (e) => {
+    //   window.onunload = () => {
+    //     localStorage.isSessionActive = "false"; 
+    //       this.userService.cleanTokens();
+    //       console.log("Cerrando....");
+    //   }
+    //   return undefined;
+    // };
+    //   window.onbeforeunload = function (event) {
+    //     var message = '';
+    //     if (typeof event == 'undefined') {
+    //         event = window.event;
+    //     }
+    //     if (event) {
+    //         event.returnValue = message;
+    //     }
+    //     // event.preventDefault();
+    //     event.stopPropagation();
+    //     // return message;
+    // };
+    // window.onstorage = function(e) {
+      console.log("onstorage-> ", event);
+      if(event.key != "isConnected") return;
+      
+      this.probarItem("jorge");
+      console.log("entrole");
+    // };
+  }
+
+  probarItem(item="probando"){
+    localStorage.setItem(item, 'dale');
   }
   
 }

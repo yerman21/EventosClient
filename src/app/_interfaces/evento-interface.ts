@@ -1,4 +1,5 @@
 export interface EventoInterface {
+    users_id?:number,
     titulo:string,
     subtitulo:string,
     descripcion:string,

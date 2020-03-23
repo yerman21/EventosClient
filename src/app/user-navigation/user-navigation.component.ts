@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UsuarioService } from '../_services/usuario.service';
 import { Router } from '@angular/router';
+import { UtilitarioService } from '../_services/utilitario.service';
 
 @Component({
   selector: 'app-user-navigation',
@@ -10,13 +11,17 @@ import { Router } from '@angular/router';
 export class UserNavigationComponent implements OnInit {
   permisos = [] as Array<Object>;
   visibleRouterOutlet:boolean;
+  isExpirate:boolean;
 
-  constructor(private userService:UsuarioService, private router:Router){
+  constructor(private userService:UsuarioService, private router:Router, private utilitario:UtilitarioService){
     if(!userService.hasToken()){
       this.viewBeforeLoggin();
-      router.navigateByUrl("");
+      console.log("IF userSevice => ", userService.userSession);
+      router.navigateByUrl("");      
     }else{
       this.vistaUsuarioLogueado();
+      console.log("ELSE userSevice => ", userService.userSession);
+      if(!userService.isSetTimeoutSession) userService.expirateTimeSession();
     }
   }
 
@@ -50,17 +55,4 @@ export class UserNavigationComponent implements OnInit {
       }
     );
   }
-
-  preLink(_list){
-    if(!_list || _list.length == 0) return {};
-    let objectResult = {};
-    _list.forEach(element => {
-      objectResult[element.i] = element.v
-    });
-    console.log(objectResult);
-    return objectResult;
-    
-  }
-  
-
 }

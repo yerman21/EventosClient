@@ -20,4 +20,13 @@ export class UtilitarioService {
     let d = new Date(fechaLocalString).toUTCString();
     return new Date(d).toISOString().slice(0, -1);
   }
+
+  preLink(_list){
+    if(!_list || _list.length == 0) return {};
+    let objectResult = {};
+    _list.forEach(element => {
+      objectResult[element.i] = element.v
+    });
+    return objectResult;  
+  }
 }

@@ -23,7 +23,7 @@ export class NotificacionComponent implements OnInit {
     _noti.visible = false;
     setTimeout( () => {
         this.notificaciones.splice(this.notificaciones.indexOf(_noti), 1);
-    }, 500);
+    }, 300);
   }
 
 }
