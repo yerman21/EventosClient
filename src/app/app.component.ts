@@ -13,12 +13,6 @@ export class AppComponent implements OnDestroy{
   visibleRouterOutlet:boolean;  
 
   constructor(private userService:UsuarioService, private notiService:NotificacionService){
-    // if(!userService.hasToken()){
-    //   this.viewBeforeLoggin();
-    // }else{
-    //   this.vistaUsuarioLogueado();
-    // }
-    // this.automaticCloseSession();
   }
 
   ngOnDestroy(): void {

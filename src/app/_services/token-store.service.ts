@@ -8,8 +8,7 @@ export class TokenStoreService {
   constructor() { }
 
   hasToken(){
-    sessionStorage.setItem("isConnected", "true");
-    let object_token:TokenInterface = JSON.parse(localStorage.getItem("token"));   
+    let object_token:TokenInterface = JSON.parse(localStorage.getItem("token"));
     if(object_token != null){
       return object_token.access_token != "";
     }

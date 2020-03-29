@@ -17,7 +17,7 @@ export class UserNavigationComponent implements OnInit {
     if(!userService.hasToken()){
       this.viewBeforeLoggin();
       console.log("IF userSevice => ", userService.userSession);
-      router.navigateByUrl("");      
+      router.navigateByUrl("login");
     }else{
       this.vistaUsuarioLogueado();
       console.log("ELSE userSevice => ", userService.userSession);

@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
   loguearse(){
     if(this.formLogin.invalid) return;
     this.userService.loguearse(this.formLogin.value).subscribe(
-      response => { 
+      response => {
         console.log("subscribe de loginComponent", response);
         // this.notiService.addNotifiInfo(response["message"]),
         // this.loginExito.emit(true);
@@ -41,5 +41,4 @@ export class LoginComponent implements OnInit {
       }
     );
   }
-
 }

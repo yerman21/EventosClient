@@ -1,5 +1,5 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpResponse } from "@angular/common/http";
+import { Injectable, OnDestroy, ComponentFactoryResolver, Type, ViewContainerRef } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
 import { catchError, tap, map } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { TokenStoreService } from './token-store.service';
@@ -10,19 +10,20 @@ import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
-export class UsuarioService implements OnDestroy{
+export class UsuarioService implements OnDestroy{  
   private API_DOMANIN:string = "http://localhost:8000/";
   private API_SERVER:string = this.API_DOMANIN+"api/";
   private clientID:number = 2;
   private clientSecred:string = "3lDBPTBhk3XnOtnWCzJKaSprznoQmribb2BqXTql";
+  private objectSetTimeOut;
   userSession:UserInterface;
   isSetTimeoutSession:boolean = false;
 
   constructor(
     private httpClient:HttpClient,
     private tokenService: TokenStoreService,
-    private router:Router
-  ) { }
+    private router:Router    
+  ) { }  
   
   ngOnDestroy(){
     this.tokenService.cleanTokens();
@@ -53,6 +54,11 @@ export class UsuarioService implements OnDestroy{
   }
 
   refreshToken(){
+    if(!this.tokenService.hasToken()){
+      this.tokenService.cleanTokens();
+      this.router.navigateByUrl("login");
+    }
+
     let data = {
       grant_type: "refresh_token",
       client_id : this.clientID,
@@ -68,6 +74,9 @@ export class UsuarioService implements OnDestroy{
       }),
       catchError(error => {
         console.log("hubo un error : ", error);
+        alert("No se pudo restablecer el token. Volviendo al login!!")
+        this.tokenService.cleanTokens();
+        this.router.navigateByUrl("login");
         return throwError(error);
       })
     );
@@ -85,8 +94,8 @@ export class UsuarioService implements OnDestroy{
   }
 
   expirateTimeSession(timeDefault=null){
-    console.log("tiempo es ", this.tokenService.getObjectToken().expires_in);
-    setTimeout(() => {
+    clearTimeout(this.objectSetTimeOut);
+    this.objectSetTimeOut = setTimeout(() => {
       var r = confirm("Se termino la session, desea continuar???");
       if(!r){
         this.refreshToken().subscribe(() => this.logout().subscribe() );
@@ -98,7 +107,6 @@ export class UsuarioService implements OnDestroy{
   }
   
   hasToken(){
-    if(this.userSession == null) this.getUserData();
     return this.tokenService.hasToken();
   }
   

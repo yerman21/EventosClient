@@ -41,8 +41,6 @@ export class InterceptorPersonal implements HttpInterceptor {
                 console.log("ejecutando dentro de catchError. ", error);
                 if(error.status == 401){
                     this.usuarioService.expirateTimeSession(1);
-                    // this.tokenStore.cleanTokens();
-                    // this.router.navigateByUrl("login");
                 }
                 return throwError(error);
             }),
@@ -52,5 +50,4 @@ export class InterceptorPersonal implements HttpInterceptor {
             })
         );
     }
-    
 }   
